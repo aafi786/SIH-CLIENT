@@ -16,6 +16,7 @@ h1,h2,h3,h4{
 .ant-menu-dark.ant-menu-inline .ant-menu-item, .ant-menu-dark.ant-menu-vertical .ant-menu-item, .ant-menu-dark.ant-menu-vertical-left .ant-menu-item, .ant-menu-dark.ant-menu-vertical-right .ant-menu-item{
     height: 50px;
     padding-top: 7px;
+    letter-spacing: 1px;
 }
 .backg{
     background: #FFD6D0;
@@ -38,4 +39,18 @@ h1,h2,h3,h4{
     border-radius: 20px;
     margin-top:11px;
     font-family: 'Quicksand', sans-serif;
+}
+.ant-tabs-ink-bar{
+    background-color: #EF5969;
+}
+.ant-tabs-nav .ant-tabs-tab-active{
+    color: #EF5969;
+}
+.ant-tabs-nav .ant-tabs-tab{
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.ant-tabs-nav .ant-tabs-tab:hover{
+    color: #2c3e50;
 }
