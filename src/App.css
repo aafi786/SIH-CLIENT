@@ -40,6 +40,24 @@ h1,h2,h3,h4{
     margin-top:11px;
     font-family: 'Quicksand', sans-serif;
 }
+.cover-btn-purple{
+    border: none;
+    color: #fff;
+    background:#333178;
+    border-radius: 20px;
+    margin-top:11px;
+    font-family: 'Quicksand', sans-serif;
+}
+.cover-btn-outline{
+    border: none;
+    color:#2c3e50;
+    border:1px solid #333178;
+    border-radius: 20px;
+    margin-top:11px;
+    font-family:'Quicksand', sans-serif;
+    margin-left:10px;
+   
+}
 .ant-tabs-ink-bar{
     background-color: #EF5969;
 }
@@ -53,4 +71,29 @@ h1,h2,h3,h4{
 }
 .ant-tabs-nav .ant-tabs-tab:hover{
     color: #2c3e50;
+}
+.ic-size{
+    font-size: 20px;
+}
+.ant-modal-title{
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.ant-input:hover{
+    border-color: #EF5969;
+}
+.ant-input:focus{
+    box-shadow:0 0 0 2px rgba(239, 89, 105, 0.2);
+    border-color: #EF5969;
+}
+.label-title{
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.ant-popover-title{
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
