@@ -19,12 +19,12 @@ export default class Today extends Component {
                         </div>
                     </div>
                     {/* Looping ENDS HERE */}
-                    <div>
+                    {/* <div>
                         <div class="uk-card uk-card-default uk-card-body">Item</div>
                     </div>
                     <div>
                         <div class="uk-card uk-card-default uk-card-body">Item</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         )

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Layout, Menu, Icon } from 'antd';
-import Bill from './Design/Bill'
+import Bill from './Design/Bill';
+import { Route, Switch } from "react-router-dom";
+import temp from './Component/bill/temp';
+import { Link } from 'react-router-dom';
 
 
 const { Content, Footer, Sider } = Layout;
@@ -16,7 +19,7 @@ class App extends Component {
     state = {
         collapsed: false,
         selectedIndex: 0,
-        tabs: ['Traits', 'Event History', 'Identities']
+
     };
 
     onCollapse = collapsed => {
@@ -31,12 +34,23 @@ class App extends Component {
                 <Layout style={{ minHeight: '100vh', background: '#333178' }}>
                     <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} style={{ background: '#333178' }}>
                         <div className="logo">
-                            <h4 className="pt-4 pl-2 text-white tracking-wide">Billing Co</h4>
+                            {
+                                (this.state.collapsed) ? <h4 className="pt-4 pl-2 text-white tracking-wide app-title-sm">BU</h4> : <h4 className="pt-4 pl-2 text-white tracking-wide app-title">Bill - U</h4>
+                            }
+
                         </div>
                         <Menu className="tracking-wide" theme="dark" defaultSelectedKeys={['1']} mode="inline" style={{ background: '#333178' }}>
                             <Menu.Item key="1">
-                                <Icon type="container" />
-                                <span>Billing</span>
+                                <Link to="/">
+                                    <Icon type="container" />
+                                    <span>Billing</span>
+                                </Link>
+                            </Menu.Item>
+                            <Menu.Item key="10">
+                                <Link to="/bookings">
+                                    <Icon type="desktop" />
+                                    <span>Sent Bills</span>
+                                </Link>
                             </Menu.Item>
                             <Menu.Item key="2">
                                 <Icon type="desktop" />
@@ -47,7 +61,7 @@ class App extends Component {
                                 title={
                                     <span>
                                         <Icon type="user" />
-                                        <span>User</span>
+                                        <span>Summary</span>
                                     </span>
                                 }
                             >
@@ -60,7 +74,7 @@ class App extends Component {
                                 title={
                                     <span>
                                         <Icon type="team" />
-                                        <span>Team</span>
+                                        <span>Bill Design</span>
                                     </span>
                                 }
                             >
@@ -69,7 +83,9 @@ class App extends Component {
                             </SubMenu>
                             <Menu.Item key="9">
                                 <Icon type="file" />
-                                <span>File</span>
+                                <span>
+                                    More..
+                                </span>
                             </Menu.Item>
                         </Menu>
                     </Sider>
@@ -78,10 +94,14 @@ class App extends Component {
                         <Content>
 
                             <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-                                <Bill />
+                                <Switch>
+                                    <Route exact path="/" component={Bill} />
+                                    <Route exact path="/bookings" component={temp} />
+                                </Switch>
+
                             </div>
                         </Content>
-                        <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                        <Footer style={{ textAlign: 'center' }}>Copyright ©2020 Created by PINKFRY</Footer>
                     </Layout>
                 </Layout>
             </div>
