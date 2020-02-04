@@ -69,6 +69,25 @@ export const getBillsByDate = () => dispatch => {
     );
 };
 
+// Get Posts
+export const getBillByID = () => dispatch => {
+  dispatch(setPostLoading());
+  axios
+    .get("/bill/getbillbyid")
+    .then(res =>
+      dispatch({
+        type: GET_BILL,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_BILL,
+        payload: null
+      })
+    );
+};
+
 // // Get Post
 // export const getPost = id => dispatch => {
 //     dispatch(setPostLoading());

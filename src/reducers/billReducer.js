@@ -28,7 +28,7 @@ export default function(state = initialState, action) {
     case GET_BILL:
       return {
         ...state,
-        bills: action.payload,
+        bill: action.payload,
         loading: false
       };
     case ADD_BILL:
