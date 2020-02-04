@@ -8,7 +8,7 @@ import Today from '../Component/bill/Today';
 import Draft from '../Component/bill/Draft';
 import { Table, Divider, Tag } from 'antd';
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 
 const { TabPane } = Tabs;
