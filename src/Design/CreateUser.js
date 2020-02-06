@@ -9,67 +9,59 @@ export default class CreateUser extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
-      username: "",
-      email: "",
-      password: "",
+      name: '',
+      username: '',
+      email: '',
+      password: '',
       users: []
-    };
+    }
   }
   componentDidMount() {
     this.fetchUser();
   }
   fetchUser = () => {
-    axios
-      .post("/auth/get-alluser")
+    axios.post('http://localhost:5000/auth/get-alluser')
       .then(res => {
         console.log(res.data);
         this.setState({
           users: res.data.msg
-        });
+        })
       })
       .catch(err => {
-        message.error(err);
-      });
-  };
+        message.error(err)
+      })
+  }
   onChangeText = e => {
     this.setState({
       [e.target.id]: e.target.value
-    });
+    })
     console.log(this.state.email);
-  };
+  }
   onSubmit = () => {
-    if (
-      this.state.name === "" ||
-      this.state.email === "" ||
-      this.state.password === "" ||
-      this.state.username === ""
-    ) {
-      message.warning("Please fill all the fields");
-    } else {
-      axios
-        .post("auth/register", {
-          name: this.state.name,
-          username: this.state.username,
-          email: this.state.email,
-          password: this.state.password
-        })
-        .then(res => {
-          if (res.data.sucsess) {
-            message.success("User Created !");
-            this.setState({
-              username: "",
-              email: "",
-              password: "",
-              name: ""
-            });
-            this.fetchUser();
-          } else {
-            message.error("Some error occur try again !");
-          }
-        });
-    }
-  };
+
+    axios.post('http://localhost:5000/auth/register', {
+      name: this.state.name,
+      username: this.state.username,
+      email: this.state.email,
+      password: this.state.password
+    })
+      .then(res => {
+        if (res.data.sucsess) {
+          message.success('User Created !');
+          this.setState({
+            username: '',
+            email: '',
+            password: '',
+            name: ''
+          })
+          this.fetchUser();
+        } else {
+          message.error('Some error occur try again !');
+        }
+
+      })
+
+  }
   render() {
     return (
       <div>

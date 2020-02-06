@@ -6,16 +6,19 @@ import { Tabs, Icon } from "antd";
 import { Popover, Button } from "antd";
 import Today from "../Component/bill/Today";
 import Draft from "../Component/bill/Draft";
-import { Table, Divider, Tag } from "antd";
+import { Table, Divider, message } from "antd";
 
 import PropTypes from "prop-types";
 import { addBill } from "../actions/billActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { Select } from 'antd';
+import axios from 'axios';
 
 const { Column } = Table;
 
 const { TabPane } = Tabs;
+const { Option } = Select;
 const { TextArea } = Input;
 
 function callback(key) {
@@ -28,17 +31,34 @@ class Bill extends Component {
     this.state = {
       visible: false,
       visiblePop: false,
-      title: "",
-      p_name: "",
-      p_amount: "",
-      p_quantity: "",
-      productArray: []
+      p_name: '',
+      p_amount: '',
+      p_quantity: '',
+      productArray: [],
+      title: '',
+      descp: '',
+      tnc: '',
+      amount: 1000,
+      result: [],
+      customerId: null,
+      customer_name: ''
     };
 
     this.onChange = this.onChange.bind(this);
     this.saveBill = this.saveBill.bind(this);
   }
-
+  componentDidMount() {
+    this.fetchAllBills();
+  }
+  fetchAllBills = () => {
+    axios.post('http://localhost:5000/auth/get-alluser')
+      .then(res => {
+        this.setState({
+          result: res.data.msg
+        })
+      })
+      .catch(err => console.log(err))
+  }
   showModal = () => {
     this.setState({
       visible: true
@@ -67,10 +87,30 @@ class Bill extends Component {
       visible: false
     });
   };
-  onChange(e) {
+  onChangeText = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.id]: e.target.value
     });
+  }
+
+  addPro = () => {
+    let ab = {};
+    let arrb = [];
+    ab.product_name = this.state.p_name;
+    ab.amount = this.state.p_amount;
+    ab.p_quantity = this.state.p_quantity
+    arrb.push(ab);
+    this.setState({
+      productArray: [...this.state.productArray, ...arrb]
+    }, () => {
+      console.log(this.state.productArray);
+    })
+
+    this.setState({
+      p_amount: '',
+      p_name: '',
+      p_quantity: ''
+    })
   }
   saveBill(e) {
     e.preventDefault();
@@ -100,7 +140,70 @@ class Bill extends Component {
     // );
     this.props.addBill(newBill, this.props.history);
   }
+  sendBill = () => {
+    var title = this.state.title;
+    var descp = this.state.descp;
+    var tnc = this.state.tnc;
+    var prodArray = this.state.productArray;
+    var amount = this.state.amount;
+    var customerId = this.state.customerId;
 
+    axios.post('http://localhost:5000/bill/savebill', {
+      customer_id: customerId,
+      title,
+      product: prodArray,
+      totAmnt: amount,
+      paid: 0,
+      due: amount,
+      tac: tnc,
+      descp: descp,
+      customerName: this.state.customer_name
+    })
+      .then(res => {
+        if (res.data.msg) {
+          axios.post('http://localhost:5000/middle/send', {
+            customer_id: res.data.msg.customer_id,
+            bill_id: res.data.msg.invoiceNo
+          })
+            .then(res => {
+              if (res.data) {
+                this.setState({
+                  productArray: [],
+                  title: '',
+                  descp: '',
+                  tnc: '',
+                  visible: false
+                })
+
+                message.success('Bill Added');
+                this.componentDidMount();
+              }
+
+
+            })
+            .catch(err => console.log(err))
+        }
+        console.log(res.data.msg)
+      })
+      .catch(err => console.log(err));
+
+  }
+  onChange = (value) => {
+    var custname = this.state.result.filter((data, key) => {
+      return data._id === value
+    })
+    console.log(custname)
+    this.setState({
+      customerId: value,
+      customer_name: custname[0].name
+    })
+  }
+
+
+
+  onSearch = (val) => {
+    console.log('search:', val);
+  }
   render() {
     return (
       <div>
@@ -112,53 +215,31 @@ class Bill extends Component {
         >
           <div>
             <label className="label-title">Title</label>
-            <Input
-              name="title"
-              value={this.state.title}
-              onChange={this.onChange}
-              placeholder="Invoice Title"
-            />
+            <Input placeholder="Invoice Title" id="title" value={this.state.title} onChange={this.onChangeText} />
             <br />
             <br />
             <label className="label-title">Descp</label>
-            <TextArea rows={4} placeholder="Invoice Descp" />
+            <TextArea rows={4} placeholder="Invoice Descp" id="descp" value={this.state.descp} onChange={this.onChangeText} />
             <br />
             <br />
             <label className="label-title">Terms & Conditions</label>
-            <TextArea rows={4} placeholder="Terms & Conditions" />
+            <TextArea rows={4} placeholder="Terms & Conditions" id="tnc" value={this.state.tnc} onChange={this.onChangeText} />
             <br />
             <br />
             <label className="label-title">Add Product</label>
             <Popover
               content={
                 <div>
-                  <Input
-                    placeholder="Product Name"
-                    value={this.state.p_name}
-                    id="p_name"
-                    onChange={this.onChangeText}
-                  />
+                  <Input placeholder="Product Name" value={this.state.p_name} id="p_name" onChange={this.onChangeText} />
                   <br />
                   <br />
-                  <Input
-                    placeholder="Amount"
-                    value={this.state.p_amount}
-                    id="p_amount"
-                    onChange={this.onChangeText}
-                  />
+                  <Input placeholder="Amount" value={this.state.p_amount} id="p_amount" onChange={this.onChangeText} />
                   <br />
                   <br />
-                  <Input
-                    placeholder="Quantity"
-                    value={this.state.p_quantity}
-                    id="p_quantity"
-                    onChange={this.onChangeText}
-                  />
+                  <Input placeholder="Quantity" value={this.state.p_quantity} id="p_quantity" onChange={this.onChangeText} />
                   <br />
                   <br />
-                  <Button type="primary" onClick={this.addPro}>
-                    Add
-                  </Button>
+                  <Button type="primary" onClick={this.addPro}>Add</Button>
                 </div>
               }
               title="Add Product"
@@ -166,33 +247,21 @@ class Bill extends Component {
               visible={this.state.visiblePop}
               onVisibleChange={this.handleVisibleChange}
             >
-              <Button
-                className="cover-btn-purple uk-margin-left"
-                type="primary"
-              >
-                Click to add product
-              </Button>
+              <Button className="cover-btn-purple uk-margin-left" type="primary">Click to add product</Button>
             </Popover>
             <br />
             <br />
             <Table dataSource={this.state.productArray}>
-              <Column
-                title="Product Name"
-                dataIndex="product_name"
-                key="product_name"
-              />
+              <Column title="Product Name" dataIndex="product_name" key="product_name" />
               <Column title="Amount" dataIndex="amount" key="quantity" />
-              <Column
-                title="Quantity"
-                dataIndex="p_quantity"
-                key="p_quantity"
-              />
+              <Column title="Quantity" dataIndex="p_quantity" key="p_quantity" />
 
               <Column
                 title="Action"
                 key="action"
                 render={(text, record) => (
                   <span>
+
                     <Divider type="vertical" />
                     <a>Delete</a>
                   </span>
@@ -202,21 +271,40 @@ class Bill extends Component {
             <br />
             <br />
             <label className="label-title">Total</label>
-            <Input placeholder="Amount" value="0" disabled="true" />
+            <Input placeholder="Amount" value="1000" disabled={true} />
+            <br />
+            <br />
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Select a person"
+              optionFilterProp="children"
+              onChange={this.onChange}
+              onSearch={this.onSearch}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {
+                this.state.result.map((data, key) => (
+                  <Option value={data._id} key={key}>{data.email}</Option>
+                ))
+              }
+
+
+            </Select>
             <br />
             <br />
             <button class="uk-button uk-button-default cover-btn">
               <Icon className="ic-size" type="edit" /> Preview
-            </button>
-            <button
-              onClick={this.saveBill}
-              class="uk-button uk-button-default cover-btn-outline"
-            >
+                            </button>
+            <button class="uk-button uk-button-default cover-btn-outline">
               <Icon className="ic-size" type="delete" /> Draft
-            </button>
-            <button class="uk-button uk-button-default cover-btn uk-margin-left">
+                            </button>
+            <button class="uk-button uk-button-default cover-btn uk-margin-left" onClick={this.sendBill}>
               <Icon className="ic-size" type="edit" /> Send
-            </button>
+                            </button>
+
           </div>
         </Modal>
         <div className="w-full backg mt-8 flex rounded-lg">
